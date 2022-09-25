@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager
+    restart: always
+    network_mode: host
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+      - "--storage.path=/alertmanager"
+    volumes:
+      - ./config/:/etc/alertmanager/
+      - ./alertmanager_data/:/alertmanager
+

@@ -1,0 +1,17 @@
+{
+	"ulid": "01GDTBQDT98HS99G68CG1P4MDV",
+	"minTime": 1664100000722,
+	"maxTime": 1664107200000,
+	"stats": {
+		"numSamples": 1255153,
+		"numSeries": 2617,
+		"numChunks": 10461
+	},
+	"compaction": {
+		"level": 1,
+		"sources": [
+			"01GDTBQDT98HS99G68CG1P4MDV"
+		]
+	},
+	"version": 1
+}

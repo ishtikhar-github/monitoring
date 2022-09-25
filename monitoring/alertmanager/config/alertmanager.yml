@@ -1,0 +1,44 @@
+route:
+  group_by: ['alertname','env']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 5m
+  receiver: 'web.hook'
+  #receiver: 'gmail'
+
+receivers:
+  - name: 'web.hook'
+    slack_configs:
+    - api_url: https://hooks.slack.com/services/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  ##webhook url
+      channel: '#alerts'
+      #icon_url: https://avatars3.githubusercontent.com/u/3380462
+      send_resolved: true
+      #text: "<!channel> \nsummary: {{ .CommonAnnotations.summary }}\ndescription: {{ .CommonAnnotations.description }}"
+      text: >-
+        {{ range .Alerts -}}
+        *Alert:* {{ .Annotations.title }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+        *Description:* {{ .Annotations.description }}
+        *Details:*
+          {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+          {{ end }}
+        {{ end }}
+
+    #webhook_configs:
+    #  - url: 'http://127.0.0.1:5001/'
+        #- name: 'gmail'
+        #email_configs:
+        #- to: 'mohdishtikhar1786@gmail.com'
+        #from: 'mohdishtikhar1786@gmail.com'
+        #smarthost: smtp.gmail.com:587
+        #auth_username: 'mohdishtikhar1786@gmail.com'
+        #auth_identity: 'mohdishtikhar1786@gmail.com'
+        #auth_password: 'ijrikfwelbtgedgf'
+
+###################### inhibit ruler#####
+inhibit_rules:
+- source_match:
+    severity: 'critical'
+  target_match:
+    severity: 'warning'
+  equal: ['alertname','env']
+

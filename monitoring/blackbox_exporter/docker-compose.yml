@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+   blackbox:
+     image: prom/blackbox-exporter
+     container_name: blackbox
+     restart: always
+     network_mode: host
+     command:
+       - "--config.file=/config.yml"
+     volumes:
+       - ./config/blackbox.yml:/config.yml
+

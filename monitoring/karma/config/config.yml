@@ -1,0 +1,67 @@
+karma:
+  name: AlertManagerUI
+alertmanager:
+  interval: 1m
+  servers:
+    - name: alertmanager
+      uri: http://localhost:9093
+      timeout: 20s
+
+ui:
+  refresh: 15s
+  theme: dark
+  hideFiltersWhenIdle: true
+  colorTitlebar: true
+  minimalGroupWidth: 420
+  alertsPerGroup: 10
+  collapseGroups: collapsedOnMobile
+
+listen:
+  address: "0.0.0.0"
+  port: 8080
+  prefix: /
+
+log:
+  config: true
+  level: info
+  format: text
+  timestamp: true
+  requests: false
+
+grid:
+  sorting:
+    order: label
+    reverse: false
+    label: severity
+    customValues:
+      labels:
+        severity:
+          critical: 1
+          warning: 2
+          info: 3
+labels:
+  color:
+    static:
+      - alertname
+      - instance
+        #- instance_name
+      - prom
+      - job
+      - env
+    custom:
+      severity:
+        - value: unknown
+          color: "#8340a4"
+        - value: info
+          color: "#87c4e0"
+        - value: warning
+          color: "#fee047"
+        - value: critical
+          color: "#ff220c"
+
+authentication:
+  basicAuth:
+    users:
+      - username: admin 
+        password: admin
+

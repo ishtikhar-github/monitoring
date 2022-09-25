@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  karma:
+      image: "ghcr.io/prymitive/karma:latest"
+      container_name: "karma"
+      restart: always
+      env_file: 
+        - config/file.env
+      #ports: 
+        #- 10999:8080
+      network_mode: "host"
+      volumes:
+      - ./config/:/config/

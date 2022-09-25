@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: always
+    network_mode: host
+    user: "1000:1000"
+    volumes:
+      - ./config/grafana.ini:/etc/grafana/grafana.ini
+        #- ./config/grafana_home:/usr/share/grafana
+        #- ./grafana_data/plugins:/var/lib/grafana/plugins
+        #- ./config/grafana_conf/provisioning:/etc/grafana/provisioning
+      - ./log/:/var/log/grafana/
+      - ./grafana_data/:/var/lib/grafana/
+

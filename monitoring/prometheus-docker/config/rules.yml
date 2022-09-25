@@ -1,0 +1,33 @@
+groups:
+- name: test
+  rules:
+
+  - alert: InstanceDown
+    expr: avg(up{instance_name=~".+",job="nodes",instance_state="stopped"}) by (instance,instance_name,job,public_ip) == 0
+    for: 1m
+    labels:
+       severity: high
+       env: infra
+       service: instances
+       team: devops
+    annotations:
+       Graph_link: "https://watch.myfareye.in/d/instances/instances?orgId=1&fullscreen&panelId=4"
+       description: "Instance  {{ $labels.instance_name }} has been down for more than 5 minutes."
+
+  - alert: SSLCertExpiringSoon
+    expr: probe_ssl_earliest_cert_expiry{domain=~".+"} - time() < 86400 * 400
+    for: 1m
+    labels:
+        severity: warning
+    annotations:
+        description: "TLS certificate will expire in {{ $value | humanizeDuration }}  for domain {{ $labels.domain }})"
+
+  - alert: EndpointDown
+    expr: probe_success{domain=~".+"} == 1
+    for: 1m
+    labels:
+        severity: "critical"
+    annotations:
+        summary: "Website {{ $labels.domain}} is Down."
+        description: "Website named {{ $labels.domain}} those full address is {{ $labels.instance}} Down for more than 2 minutes."
+

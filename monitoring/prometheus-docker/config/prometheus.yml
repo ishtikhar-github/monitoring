@@ -1,0 +1,83 @@
+# my global config
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+  external_labels:
+        prom: 'prometheus'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - scheme: http
+      static_configs:
+        - targets: ["localhost:9093"]
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+   - "rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["localhost:9090"]
+
+        #  - job_name: "node-exporter"
+        #static_configs:
+        #- targets: ["172.31.21.172:7073"]
+
+  - job_name: grafana
+    static_configs:
+            - targets: ["localhost:3000"]
+
+  - job_name: node-exporter
+    static_configs:
+            - targets: ["localhost:9100"]
+
+  - job_name: nodes
+    ec2_sd_configs:
+      - region: ap-south-1
+        port: 7073
+        access_key: 'AKIARWVIHWY5W4HTS7J6'
+        secret_key: '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'
+    relabel_configs:
+      - source_labels: [__meta_ec2_tag_Name]
+        action: keep
+      - source_labels: [__meta_ec2_tag_Name]
+        target_label: instance_name
+      - source_labels: [__meta_ec2_public_ip]
+        target_label: public_ip
+      - source_labels: [__meta_ec2_instance_state]
+        target_label: instance_state
+
+  - job_name: 'alertmanager'
+    static_configs:
+      - targets: ['localhost:9093']
+
+  
+  - job_name: 'blackbox_exporter'
+    metrics_path: /probe
+    params:
+      module: [http_2xx] # Look for a HTTP 200 response.
+    file_sd_configs:
+      - files: ['/etc/prometheus/blackbox_target.yml']
+        #static_configs:
+        #- targets: 
+        # - https://moreretail.in
+        # - https://omnicsadev.aws-more.com
+    relabel_configs:
+       - source_labels: [__address__]
+         target_label: __param_target
+       - source_labels: [__param_target]
+         target_label: instance
+       - target_label: __address__
+         replacement: 127.0.0.1:9115
+       
