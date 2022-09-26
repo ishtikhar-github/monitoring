@@ -48,6 +48,13 @@ scrape_configs:
         port: 7073
         access_key: 'AKIARWVIHWY5W4HTS7J6'
         secret_key: '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'
+        refresh_interval: 1m
+        filters:
+            - name: tag:OS
+              values:
+                 - '*Linux/UNIX*'
+                 - '*Ubuntu*'
+                 - '*Amazon Linux*'
     relabel_configs:
       - source_labels: [__meta_ec2_tag_Name]
         action: keep
